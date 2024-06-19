@@ -11,6 +11,7 @@ class DBClient {
     this.client.connect().then(() => {
       this.db = this.client.db(database);
       this.users = this.db.collection('user');
+      this.files = this.db.collection('files');
     }).catch((err) => {
       console.log(err);
     });
