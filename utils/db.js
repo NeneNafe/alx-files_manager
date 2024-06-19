@@ -9,7 +9,8 @@ class DBClient {
   constructor() {
     this.client = new MongoClient(url, { useUnifiedTopology: true, useNewUrlParser: true });
     this.client.connect().then(() => {
-      this.db = this.client.db(`${database}`);
+      this.db = this.client.db(database);
+      this.users = this.db.collection('user');
     }).catch((err) => {
       console.log(err);
     });
@@ -29,6 +30,18 @@ class DBClient {
     const files = this.db.collection('files');
     const fileNum = await files.countDocuments();
     return fileNum;
+  }
+
+  async createUser(email, password) {
+    const users = this.db.collection('users');
+    const result = await users.insertOne({ email, password });
+    return result.ops[0];
+  }
+
+  async getUserByEmail(email) {
+    const users = this.db.collection('users');
+    const user = await users.findOne({ email });
+    return user;
   }
 }
 
