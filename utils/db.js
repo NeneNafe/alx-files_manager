@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectID } = require('mongodb');
 
 const host = process.env.DB_HOST || 'localhost';
 const port = process.env.DB_PORT || 27017;
@@ -42,6 +42,22 @@ class DBClient {
     const users = this.db.collection('users');
     const user = await users.findOne({ email });
     return user;
+  }
+
+  async getUserById(id) {
+    const users = this.db.collection('users');
+    return users.findOne({ _id: new ObjectID(id) });
+  }
+
+  async getFileById(id) {
+    const files = this.db.collection('files');
+    return files.findOne({ _id: new ObjectID(id) });
+  }
+
+  async createFile(fileData) {
+    const files = this.db.collection('files');
+    const result = await files.insertOne(fileData);
+    return result.ops[0];
   }
 }
 
